@@ -10,43 +10,43 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-latest # Change to ubuntu-22.04 or ubuntu-24.04 if testing compatibility
 
     steps:
-      # Checkout the repository
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup .NET environment
+      # Step 2: Setup .NET environment
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0' # Specify the .NET version you want to use
+          dotnet-version: '9.0' # Specify the .NET version (e.g., 6.0, 7.0, 9.0, etc.)
 
-      # Restore dependencies
+      # Step 3: Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # Build the project
+      # Step 4: Build the project
       - name: Build the project
         run: dotnet build --no-restore --configuration Release
 
-      # Run tests and generate .trx results
-      - name: Run tests and generate results
+      # Step 5: Run tests and generate .trx results
+      - name: Run tests
         run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
 
-      # Upload Build Artifacts
+      # Step 6: Upload Build Artifacts
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
-          path: '**/bin/Release/**/*' # Adjust path based on your build output structure
+          path: '**/bin/Release/**/*' # Adjust path based on your project structure
 
-      # Upload Test Results
+      # Step 7: Upload Test Results
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: '**/TestResults/*.trx' # Path to the generated .trx files
+          path: '**/TestResults/*.trx' # Ensure this matches your test results location
 
      
